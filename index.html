@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ระบบจัดการชมรมนักศึกษา</title>
+        
+        <!-- External Libraries -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="css/base.css">
+        <link rel="stylesheet" href="css/components.css">
+        <link rel="stylesheet" href="css/animations.css">
+        <link rel="stylesheet" href="css/responsive.css">
+    </head>
+
+    <body class="bg-gray-50">
+        <!-- ============================================
+            NAVIGATION BAR
+            ============================================ -->
+        <nav class="gradient-bg shadow-lg sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <!-- Logo -->
+                    <div class="flex items-center">
+                        <i class="fas fa-university text-white text-2xl mr-3"></i>
+                        <span class="text-white text-xl font-bold">ระบบจัดการชมรม</span>
+                    </div>
+                    
+                    <!-- Navigation Links -->
+                    <div class="flex items-center space-x-8">
+                        <button onclick="Navigation.showPage('home')" class="nav-btn text-white hover:text-yellow-300 transition-colors font-medium">
+                            <i class="fas fa-home mr-2"></i>หน้าหลัก
+                        </button>
+                        <button onclick="Navigation.showPage('clubs')" class="nav-btn text-white hover:text-yellow-300 transition-colors font-medium">
+                            <i class="fas fa-users mr-2"></i>รายชื่อชมรม
+                        </button>
+                        <button onclick="Navigation.showPage('activities')" class="nav-btn text-white hover:text-yellow-300 transition-colors font-medium">
+                            <i class="fas fa-calendar-alt mr-2"></i>กิจกรรม
+                        </button>
+                        
+                        <!-- Auth Section -->
+                        <div id="auth-section">
+                            <!-- Login Button -->
+                            <button id="login-btn" onclick="Auth.showLoginModal()" 
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-sign-in-alt mr-2"></i>เข้าสู่ระบบ
+                            </button>
+                            
+                            <!-- User Status -->
+                            <div id="user-status" class="hidden flex items-center space-x-4">
+                                <div class="flex items-center space-x-2 text-white">
+                                    <div class="user-avatar rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <span id="user-greeting" class="text-sm font-medium"></span>
+                                </div>
+                                <button onclick="Auth.logout()" class="text-white hover:text-yellow-300 transition-colors font-medium text-sm">
+                                    <i class="fas fa-sign-out-alt mr-1"></i>ออกจากระบบ
+                                </button>
+                            </div>
+                        </div>
+                            <a href="login-admin.html" class="text-white hover:text-yellow-300">
+                            <i class="fas fa-shield-alt mr-2"></i>Admin
+                            </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ============================================
+            HOME PAGE
+            ============================================ -->
+        <div id="home-page" class="page">
+            <!-- Hero Section -->
+            <div class="gradient-bg text-white py-20">
+                <div class="max-w-7xl mx-auto px-4 text-center">
+                    <h1 class="text-5xl font-bold mb-6">ค้นหาชมรมที่ใช่สำหรับคุณ</h1>
+                    <p class="text-xl mb-8 opacity-90">ใช้ AI ช่วยแนะนำชมรมตามความสนใจของคุณ</p>
+            
+                    <!-- AI Club Recommendation -->
+                    <div class="max-w-2xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl p-8 ai-glow">
+                        <h3 class="text-2xl font-semibold mb-4">🤖 AI แนะนำชมรม</h3>
+                        <div class="flex gap-4">
+                            <input type="text" id="interest-input"
+                                placeholder="เช่น: ดนตรี, กีฬา, เทคโนโลยี, ศิลปะ..."
+                                class="flex-1 px-4 py-3 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                            <button onclick="HomePage.generateRecommendations()"
+                                    class="bg-yellow-500 hover:bg-yellow-600 px-8 py-3 rounded-lg font-semibold text-gray-800 transition-colors">
+                                <i class="fas fa-magic mr-2"></i>แนะนำ
+                            </button>
+                        </div>
+                        <div id="ai-recommendations" class="mt-6 hidden">
+                            <h4 class="font-semibold mb-3">ชมรมที่แนะนำสำหรับคุณ:</h4>
+                            <div id="recommended-clubs" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slider Container -->
+            <div id="slider-container"></div>
+            
+            <!-- Calendar Section -->
+            <div id="calendar-section"></div>
+        </div>
+
+        <!-- ============================================
+            CLUBS PAGE
+            ============================================ -->
+        <div id="clubs-page" class="page hidden">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">📋 รายชื่อชมรม</h1>
+        
+                <!-- Category Filter -->
+                <div id="club-filters" class="flex flex-wrap justify-center gap-4 mb-8"></div>
+
+                <!-- Clubs Grid -->
+                <div id="clubs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </div>
+        </div>
+
+        <!-- ============================================
+            ACTIVITIES PAGE
+            ============================================ -->
+        <div id="activities-page" class="page hidden">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">🎯 กิจกรรม</h1>
+                <!-- Activity Sections -->
+                <div class="space-y-12">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-6 text-green-600 flex items-center">
+                            <i class="fas fa-door-open mr-3"></i>กิจกรรมที่เปิดรับสมัคร
+                        </h2>
+                        <div id="open-activities" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-2xl font-bold mb-6 text-orange-600 flex items-center">
+                            <i class="fas fa-clock mr-3"></i>กิจกรรมที่ใกล้ปิดรับสมัคร
+                        </h2>
+                        <div id="closing-activities" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-2xl font-bold mb-6 text-gray-600 flex items-center">
+                            <i class="fas fa-door-closed mr-3"></i>กิจกรรมที่ปิดรับสมัครแล้ว
+                        </h2>
+                        <div id="closed-activities" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+            MODALS
+            ============================================ -->
+        <!-- Registration Modal -->
+        <div id="registration-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">สมัครเข้าร่วมกิจกรรม</h3>
+                    <button onclick="Modals.closeRegistration()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div id="registration-content"></div>
+            </div>
+        </div>
+
+        <!-- Login Modal -->
+        <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <!-- Tab Navigation -->
+                <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
+                    <button id="login-tab-btn" onclick="Auth.switchTab('login')" 
+                            class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-blue-600 text-white">
+                        เข้าสู่ระบบ
+                    </button>
+                    <button id="register-tab-btn" onclick="Auth.switchTab('register')" 
+                            class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-800">
+                        สมัครสมาชิก
+                    </button>
+                </div>
+
+                <!-- Login Tab Content -->
+                <div id="login-tab" class="auth-tab"></div>
+
+                <!-- Register Tab Content -->
+                <div id="register-tab" class="auth-tab hidden"></div>
+            </div>
+        </div>
+
+        <!-- ============================================
+            SCRIPTS
+            ============================================ -->
+        <!-- Configuration & Data -->
+        <script src="js/config/data.js"></script>
+        
+        <!-- Utilities -->
+        <script src="js/utils/helpers.js"></script>
+        <script src="js/utils/validators.js"></script>
+        <script src="js/utils/notifications.js"></script>
+        <script>
+            // Initialize notifications after other components
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    NotificationSystem.init();
+                }, 1000);
+            });
+        </script>
+        
+        <!-- Components -->
+        <script src="js/components/slider.js"></script>
+        <script src="js/components/calendar.js"></script>
+        <script src="js/components/modals.js"></script>
+        
+        <!-- Pages -->
+        <script src="js/pages/home.js"></script>
+        <script src="js/pages/clubs.js"></script>
+        <script src="js/pages/activities.js"></script>
+        
+        <!-- Authentication -->
+        <script src="js/auth/auth.js"></script>
+        
+        <!-- Main App -->
+        <script src="js/app.js"></script>
+    </body>
+</html>
